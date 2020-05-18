@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 0.4" "http://jpf.sourceforge.net/plugin_0_7.dtd">
+<plugin id="verovio-converter" version="0.1">
+	<requires>
+		<import plugin-id="pl.psnc.dl.ege.root"/>
+	</requires>
+	<extension plugin-id="pl.psnc.dl.ege.root" point-id="Converter" id="VerovioConverter">
+		<parameter id="class" value="de.edirom.meigarage.verovio.VerovioConverter"/>
+		<parameter id="name" value="Verovio Converter"/>
+	</extension>
+</plugin>

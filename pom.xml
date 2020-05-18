@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>ege</artifactId>
+        <groupId>pl.psnc.dl.ege</groupId>
+        <version>0.5.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>de.edirom.meigarage</groupId>
+    <artifactId>verovio-converter</artifactId>
+    <version>0.1</version>
+
+    <name>Verovio Converter</name>
+    <properties>
+
+        <project.build.sourceEncoding>
+            UTF-8
+        </project.build.sourceEncoding>
+
+        <project.reporting.outputEncoding>
+            UTF-8
+        </project.reporting.outputEncoding>
+
+    </properties>
+
+    <licenses>
+        <license>
+            <name>GPL</name>
+            <url>http://www.gnu.org/licenses/gpl.txt</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>roewenstrunk</id>
+            <name>Daniel Röwenstrunk</name>
+            <email>roewenstrunk@uni-paderborn.de</email>
+            <roles>
+                <role>Project lead</role>
+            </roles>
+            <organization>Paderborn University</organization>
+        </developer>
+    </developers>
+    <dependencies>
+        <dependency>
+            <groupId>pl.psnc.dl.ege</groupId>
+            <artifactId>ege-api</artifactId>
+            <version>0.2.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>pl.psnc.dl.ege</groupId>
+            <artifactId>ege-framework</artifactId>
+            <version>0.3</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+</project>
