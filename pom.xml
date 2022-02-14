@@ -11,7 +11,7 @@
 
     <groupId>de.edirom.meigarage</groupId>
     <artifactId>verovio-converter</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.2</version>
 
     <name>Verovio Converter</name>
     <properties>
