@@ -1,6 +1,7 @@
 package de.edirom.meigarage.verovio;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import pl.psnc.dl.ege.types.ConversionActionArguments;
 import pl.psnc.dl.ege.types.DataType;
 
@@ -9,7 +10,7 @@ import java.util.List;
 
 public class ConverterConfiguration {
 
-    private static final Logger LOGGER = Logger.getLogger(VerovioConverter.class);
+    private static final Logger LOGGER = LogManager.getLogger(VerovioConverter.class);
 
     public static final List<ConversionActionArguments> CONVERSIONS = new ArrayList<ConversionActionArguments>();
     public static final String PROFILE_KEY = "de.edirom.meigarage.lilypond.profileNames";

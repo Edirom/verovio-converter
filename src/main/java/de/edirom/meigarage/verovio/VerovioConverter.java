@@ -1,6 +1,7 @@
 package de.edirom.meigarage.verovio;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import pl.psnc.dl.ege.component.Converter;
 import pl.psnc.dl.ege.configuration.EGEConfigurationManager;
 import pl.psnc.dl.ege.configuration.EGEConstants;
@@ -25,7 +26,7 @@ import java.util.regex.Pattern;
 
 public class VerovioConverter implements Converter {
 
-    private static final Logger LOGGER = Logger.getLogger(VerovioConverter.class);
+    private static final Logger LOGGER = LogManager.getLogger(VerovioConverter.class);
     private IOResolver ior = EGEConfigurationManager.getInstance()
             .getStandardIOResolver();
 
