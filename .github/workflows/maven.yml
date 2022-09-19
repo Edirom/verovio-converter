@@ -21,6 +21,9 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
+    - name: Install required tools
+      run: |
+       sudo bash required.sh
     - name: maven-settings
       uses: s4u/maven-settings-action@v2
       with:

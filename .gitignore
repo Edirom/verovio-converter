@@ -17,3 +17,5 @@
 !*.ent
 !*.xsd
 !*.yml
+!test-input.*.zip
+!required.sh
