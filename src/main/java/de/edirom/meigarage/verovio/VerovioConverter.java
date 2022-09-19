@@ -1,6 +1,7 @@
 package de.edirom.meigarage.verovio;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import pl.psnc.dl.ege.component.Converter;
 import pl.psnc.dl.ege.configuration.EGEConfigurationManager;
 import pl.psnc.dl.ege.configuration.EGEConstants;
@@ -10,10 +11,7 @@ import pl.psnc.dl.ege.types.DataType;
 import pl.psnc.dl.ege.utils.EGEIOUtils;
 import pl.psnc.dl.ege.utils.IOResolver;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,11 +23,15 @@ import java.util.regex.Pattern;
 
 public class VerovioConverter implements Converter {
 
-    private static final Logger LOGGER = Logger.getLogger(VerovioConverter.class);
+    private static final Logger LOGGER = LogManager.getLogger(VerovioConverter.class);
     private IOResolver ior = EGEConfigurationManager.getInstance()
             .getStandardIOResolver();
 
     public void convert(InputStream inputStream, OutputStream outputStream, ConversionActionArguments conversionDataTypes) throws ConverterException, IOException {
+        convert(inputStream, outputStream, conversionDataTypes, null);
+    }
+
+    public void convert(InputStream inputStream, OutputStream outputStream, ConversionActionArguments conversionDataTypes, String tempDir) throws ConverterException, IOException {
         boolean found = false;
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -41,9 +43,9 @@ public class VerovioConverter implements Converter {
                         + conversionDataTypes.getInputType().toString()
                         + " TO "
                         + conversionDataTypes.getOutputType().toString()
-                        + " WITH profile " + profile );
+                        + " WITH profile " + profile);
                 convertDocument(inputStream, outputStream, cadt.getInputType(), cadt.getOutputType(),
-                        cadt.getProperties());
+                        cadt.getProperties(), tempDir);
                 found = true;
             }
         }
@@ -58,7 +60,7 @@ public class VerovioConverter implements Converter {
      * Prepares transformation : based on MIME type.
      */
     private void convertDocument(InputStream inputStream, OutputStream outputStream,
-                                 DataType fromDataType, DataType toDataType, Map<String, String> properties) throws IOException,
+                                 DataType fromDataType, DataType toDataType, Map<String, String> properties, String tempDir) throws IOException,
             ConverterException {
 
         // MEI 4.0 to PDF
@@ -66,8 +68,8 @@ public class VerovioConverter implements Converter {
                 toDataType.getFormat().equals(Conversion.MEI40TOPDF.getOFormatId())) {
 
             properties.put("verovio-extension", "svg");
-            properties.put("verovio-parameter", " --mm-output --type svg ");
-            performVerovioTransformation(inputStream, outputStream, "mei", "pdf", properties);
+            properties.put("verovio-parameter", " --mm-output --output-to svg ");
+            performVerovioTransformation(inputStream, outputStream, "mei", "pdf", properties, tempDir);
 
         }
         // MEI 4.0 to SVG
@@ -75,8 +77,8 @@ public class VerovioConverter implements Converter {
                 toDataType.getFormat().equals(Conversion.MEI40TOSVG.getOFormatId())) {
 
             properties.put("verovio-extension", "svg");
-            properties.put("verovio-parameter", " --type svg ");
-            performVerovioTransformation(inputStream, outputStream, "mei", "svg", properties);
+            properties.put("verovio-parameter", " --output-to svg ");
+            performVerovioTransformation(inputStream, outputStream, "mei", "svg", properties, tempDir);
 
         }
         // MEI 4.0 to MIDI
@@ -84,49 +86,56 @@ public class VerovioConverter implements Converter {
                 toDataType.getFormat().equals(Conversion.MEI40TOMIDI.getOFormatId())) {
 
             properties.put("verovio-extension", "mid");
-            properties.put("verovio-parameter", " --type midi ");
-            performVerovioTransformation(inputStream, outputStream, "mei", "svg", properties);
+            properties.put("verovio-parameter", " --output-to midi ");
+            performVerovioTransformation(inputStream, outputStream, "mei", "svg", properties, tempDir);
 
         }
     }
 
     private void performVerovioTransformation(InputStream inputStream, OutputStream outputStream,
                                               String inputFormat, String outputFormat,
-                                               Map<String, String> properties) throws IOException, ConverterException {
+                                              Map<String, String> properties, String tempDir) throws IOException, ConverterException {
 
         File inTmpDir = null;
         File outTempDir = null;
+        InputStream is = null;
         try {
-            inTmpDir = prepareTempDir();
+            inTmpDir = prepareTempDir(tempDir);
             ior.decompressStream(inputStream, inTmpDir);
             // avoid processing files ending in .bin
             File inputFile = searchForData(inTmpDir, "^.*(?<!bin)$");
-            if(inputFile!=null) {
+            outTempDir = prepareTempDir(tempDir);
+            if (inputFile != null) {
                 //String newFileName = inputFile.getAbsolutePath().substring(0, inputFile.getAbsolutePath().lastIndexOf(".")) + ".ly";
                 //inputFile.renameTo(new File(newFileName));
-
-                outTempDir = prepareTempDir();
-
+                File outputFile = new File(outTempDir + "/output." + properties.get("verovio-extension"));
                 ProcessBuilder builder = new ProcessBuilder();
-                builder.command("sh", "-c", "verovio " + properties.get("verovio-parameter") + " --from "
-                        + inputFormat + " --outfile " + outTempDir + "/output." + properties.get("verovio-extension")
-                        + " --all-pages " + inputFile.getAbsolutePath());
+                String command = "verovio " + properties.get("verovio-parameter") + " --input-from "
+                        + inputFormat + " --outfile " + outputFile.getAbsolutePath()
+                        + " --all-pages " + inputFile.getAbsolutePath();
+                System.out.println(command);
+                builder.command("sh", "-c", command);
 
                 builder.directory(inTmpDir);
-                Process process = builder.start();
 
+                builder.redirectErrorStream(true);
+                Process process = builder.start();
+                BufferedReader inStreamReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                while (inStreamReader.readLine() != null) {
+                    System.out.println(inStreamReader.readLine());
+                }
                 VerovioRunner runner = new VerovioRunner(process.getInputStream());
                 Executors.newSingleThreadExecutor().submit(runner);
                 int exitCode = process.waitFor();
 
-                if(exitCode != 0) {
+                if (exitCode != 0) {
                     throw new ConverterException("Verovio process ended with exit code " + exitCode);
                 }
 
-                if(outputFormat == "pdf") {
+                if (outputFormat == "pdf") {
                     //rsvg-convert -f pdf -o out.pdf *.svg
 
-                    File outTempDir2 = prepareTempDir();
+                    File outTempDir2 = prepareTempDir(tempDir);
 
                     builder = new ProcessBuilder();
                     builder.command("sh", "-c", "rsvg-convert -f pdf -o " + outTempDir2.getAbsolutePath() + "/out.pdf *.svg");
@@ -137,7 +146,7 @@ public class VerovioConverter implements Converter {
                     Executors.newSingleThreadExecutor().submit(runner);
                     exitCode = process.waitFor();
 
-                    if(exitCode != 0) {
+                    if (exitCode != 0) {
                         throw new ConverterException("rsvg-convert process ended with exit code " + exitCode);
                     }
 
@@ -150,17 +159,33 @@ public class VerovioConverter implements Converter {
             e.printStackTrace();
         } finally {
             if (outTempDir != null && outTempDir.exists())
-                EGEIOUtils.deleteDirectory(outTempDir);
+                //EGEIOUtils.deleteDirectory(outTempDir)
+                ;
             if (inTmpDir != null && inTmpDir.exists())
-                EGEIOUtils.deleteDirectory(inTmpDir);
+                //EGEIOUtils.deleteDirectory(inTmpDir)
+                ;
+        }
+        try {
+            is.close();
+        } catch (Exception ex) {
+            // do nothing
         }
     }
 
     private File prepareTempDir() {
+        return prepareTempDir(null);
+    }
+
+    private File prepareTempDir(String tempDir) {
         File inTempDir = null;
         String uid = UUID.randomUUID().toString();
-        inTempDir = new File(EGEConstants.TEMP_PATH + File.separator + uid
-                + File.separator);
+        if (tempDir != null) {
+            inTempDir = new File(tempDir + File.separator + uid
+                    + File.separator);
+        } else {
+            inTempDir = new File(EGEConstants.TEMP_PATH + File.separator + uid
+                    + File.separator);
+        }
         inTempDir.mkdir();
         return inTempDir;
     }
@@ -185,4 +210,5 @@ public class VerovioConverter implements Converter {
 
     public List<ConversionActionArguments> getPossibleConversions() {
         return ConverterConfiguration.CONVERSIONS;
-    }}
+    }
+}
