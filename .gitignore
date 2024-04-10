@@ -19,3 +19,4 @@
 !*.yml
 !test-input.*.zip
 !required.sh
+!expected-output.svg
