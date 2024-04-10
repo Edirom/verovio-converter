@@ -8,5 +8,5 @@ cd /tmp/verovio/tools
 cmake ../cmake 
 make -j 8 
 make install 
-sudo cp /tmp/verovio/fonts/VerovioText-1.0.ttf /usr/local/share/fonts/ 
+sudo cp /tmp/verovio/fonts/Leipzig/Leipzig.ttf /usr/local/share/fonts/ 
 fc-cache
