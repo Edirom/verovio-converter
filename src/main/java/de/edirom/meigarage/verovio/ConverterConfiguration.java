@@ -21,9 +21,10 @@ public class ConverterConfiguration {
     public static final String DEFAULTFAMILY = "Other documents";
 
     static {
-        CONVERSIONS.add(getConversionActionArgument(Conversion.MEI40TOPDF));
-        CONVERSIONS.add(getConversionActionArgument(Conversion.MEI40TOSVG));
-        CONVERSIONS.add(getConversionActionArgument(Conversion.MEI40TOMIDI));
+        CONVERSIONS.add(getConversionActionArgument(Conversion.MEI51TOPDF));
+        CONVERSIONS.add(getConversionActionArgument(Conversion.MEI51TOSVG));
+        CONVERSIONS.add(getConversionActionArgument(Conversion.MEI51TOMIDI));
+        CONVERSIONS.add(getConversionActionArgument(Conversion.MUSICXMLTOMEI51));
     }
 
     private static ConversionActionArguments getConversionActionArgument(Conversion format) {

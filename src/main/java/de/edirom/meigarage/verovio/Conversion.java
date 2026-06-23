@@ -5,11 +5,11 @@ public enum Conversion {
     /*
       supported formats
      */
-    MEI40TOPDF(
-            "mei40topdf", // "id"
+    MEI51TOPDF(
+            "mei51topdf", // "id"
             "text/xml", // "input mime type"
-            "mei40", // "input format id"
-            "MEI 4.0 (2018) Document", // "input description"
+            "mei51", // "input format id"
+            "MEI 5.1 Document", // "input description"
             "score", // "input type" (score, audio, image, customization)
             "application/pdf", // "output mime type"
             "pdf-verovio", // "output format id"
@@ -18,11 +18,11 @@ public enum Conversion {
             true, // "visible as input"
             9 // "cost"
     ),
-    MEI40TOSVG(
-            "mei40tosvg", // "id"
+    MEI51TOSVG(
+            "mei51tosvg", // "id"
             "text/xml", // "input mime type"
-            "mei40", // "input format id"
-            "MEI 4.0 (2018) Document", // "input description"
+            "mei51", // "input format id"
+            "MEI 5.1 Document", // "input description"
             "score", // "input type" (score, audio, image, customization)
             "image/svg+xml", // "output mime type"
             "svg", // "output format id"
@@ -31,11 +31,11 @@ public enum Conversion {
             true, // "visible as input"
             9 // "cost"
     ),
-    MEI40TOMIDI(
-            "mei40tomidi", // "id"
+    MEI51TOMIDI(
+            "mei51tomidi", // "id"
             "text/xml", // "input mime type"
-            "mei40", // "input format id"
-            "MEI 4.0 (2018) Document", // "input description"
+            "mei51", // "input format id"
+            "MEI 5.1 Document", // "input description"
             "score", // "input type" (score, audio, image, customization)
             "audio/x-midi", // "output mime type"
             "midi", // "output format id"
@@ -43,7 +43,22 @@ public enum Conversion {
             "score", // "output type" (score, audio, image, customization)
             true, // "visible as input"
             9 // "cost"
+    ),
+    MUSICXMLTOMEI51(
+            "musicxmltomei51", // "id"
+            "text/xml", // "input mime type"
+            "musicxml", // "input format id"
+            "MusicXML Document", // "input description"
+            "score", // "input type" (score, audio, image, customization)
+            "text/xml", // "output mime type"
+            "mei51", // "output format id"
+            "MEI 5.1 Document", // "output description"
+            "score", // "output type" (score, audio, image, customization)
+            true, // "visible as input"
+            9 // "cost"
     )
+
+
     ;
 
     // abc, darms, mei, pae, xml

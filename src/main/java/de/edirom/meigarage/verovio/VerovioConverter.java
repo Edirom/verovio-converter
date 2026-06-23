@@ -63,31 +63,40 @@ public class VerovioConverter implements Converter {
                                  DataType fromDataType, DataType toDataType, Map<String, String> properties, String tempDir) throws IOException,
             ConverterException {
 
-        // MEI 4.0 to PDF
-        if (fromDataType.getFormat().equals(Conversion.MEI40TOPDF.getIFormatId()) &&
-                toDataType.getFormat().equals(Conversion.MEI40TOPDF.getOFormatId())) {
+        // MEI 5.1 to PDF
+        if (fromDataType.getFormat().equals(Conversion.MEI51TOPDF.getIFormatId()) &&
+                toDataType.getFormat().equals(Conversion.MEI51TOPDF.getOFormatId())) {
 
             properties.put("verovio-extension", "svg");
             properties.put("verovio-parameter", " --mm-output --output-to svg ");
             performVerovioTransformation(inputStream, outputStream, "mei", "pdf", properties, tempDir);
 
         }
-        // MEI 4.0 to SVG
-        else if (fromDataType.getFormat().equals(Conversion.MEI40TOSVG.getIFormatId()) &&
-                toDataType.getFormat().equals(Conversion.MEI40TOSVG.getOFormatId())) {
+        // MEI 5.1 to SVG
+        else if (fromDataType.getFormat().equals(Conversion.MEI51TOSVG.getIFormatId()) &&
+                toDataType.getFormat().equals(Conversion.MEI51TOSVG.getOFormatId())) {
 
             properties.put("verovio-extension", "svg");
             properties.put("verovio-parameter", " --output-to svg ");
             performVerovioTransformation(inputStream, outputStream, "mei", "svg", properties, tempDir);
 
         }
-        // MEI 4.0 to MIDI
-        else if (fromDataType.getFormat().equals(Conversion.MEI40TOMIDI.getIFormatId()) &&
-                toDataType.getFormat().equals(Conversion.MEI40TOMIDI.getOFormatId())) {
+        // MEI 5.1 to MIDI
+        else if (fromDataType.getFormat().equals(Conversion.MEI51TOMIDI.getIFormatId()) &&
+                toDataType.getFormat().equals(Conversion.MEI51TOMIDI.getOFormatId())) {
 
             properties.put("verovio-extension", "mid");
             properties.put("verovio-parameter", " --output-to midi ");
-            performVerovioTransformation(inputStream, outputStream, "mei", "svg", properties, tempDir);
+            performVerovioTransformation(inputStream, outputStream, "mei", "midi", properties, tempDir);
+
+        }
+        // MUSICXML to MEI 5.1
+        else if (fromDataType.getFormat().equals(Conversion.MUSICXMLTOMEI51.getIFormatId()) &&
+                toDataType.getFormat().equals(Conversion.MUSICXMLTOMEI51.getOFormatId())) {
+
+            properties.put("verovio-extension", "mid");
+            properties.put("verovio-parameter", " --input-from xml --output-to mei ");
+            performVerovioTransformation(inputStream, outputStream, "musicxml", "mei", properties, tempDir);
 
         }
     }
