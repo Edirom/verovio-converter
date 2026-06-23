@@ -29,7 +29,7 @@ public class VerovioConverterTest {
         InputStream is = new FileInputStream("src/test/resources/test-input.mei.zip");
         OutputStream os = new FileOutputStream("src/test/resources/output.svg.zip");
         //OutputStream os = new FileOutputStream("src/test/resources/output.pdf.zip");
-        DataType inputType = new DataType("mei40","text/xml");
+        DataType inputType = new DataType("mei51","text/xml");
         //DataType outputType = new DataType("pdf-verovio","application/pdf");
         DataType outputType = new DataType("svg","image/svg+xml");
         ConversionActionArguments conversionActionArguments = new ConversionActionArguments(inputType, outputType, null);
