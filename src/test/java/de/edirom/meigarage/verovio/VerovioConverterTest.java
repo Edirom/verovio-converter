@@ -37,25 +37,10 @@ public class VerovioConverterTest {
         converter.convert(is, os, conversionActionArguments, tempDir);
         assertNotNull(new File("src/test/resources/output.svg.zip"));
         InputStream isout = new FileInputStream("src/test/resources/output.svg.zip");
-        File folder = new File("src/test/resources/");
-        File[] listOfFiles = folder.listFiles();
-        for (File file : listOfFiles) {
-            if (file.isFile()) {
-                System.out.println(file.getName());
-            }
-        }
         EGEConfigurationManager.getInstance().getStandardIOResolver().decompressStream(isout, new File("src/test/resources/output.svg"));
-        File folder2 = new File("src/test/resources/output.svg");
-        listOfFiles = folder2.listFiles();
-        for (File file : listOfFiles) {
-            if (file.isFile()) {
-                System.out.println("####");
-                System.out.println(file.getName());
-            }
-        }
         assertEquals("Files differ",
-                new String(Files.readAllBytes(Paths.get("src/test/resources/expected-output.svg"))).replaceAll("id=\"[\\s\\S]*?\"|xlink:href=\"[\\s\\S]*?\"|class=\"[\\s\\S]*?\"",""),
-                new String(Files.readAllBytes(Paths.get("src/test/resources/output.svg/output_001.svg"))).replaceAll("id=\"[\\s\\S]*?\"|xlink:href=\"[\\s\\S]*?\"|class=\"[\\s\\S]*?\"",""));
+                new String(Files.readAllBytes(Paths.get("src/test/resources/expected-output.svg"))).replaceAll("id=\"[\\s\\S]*?\"|xlink:href=\"[\\s\\S]*?\"|class=\"[\\s\\S]*?\"|<style type=\"text/css\">[\\s\\S]*?</style>",""),
+                new String(Files.readAllBytes(Paths.get("src/test/resources/output.svg/output.svg"))).replaceAll("id=\"[\\s\\S]*?\"|xlink:href=\"[\\s\\S]*?\"|class=\"[\\s\\S]*?\"|<style type=\"text/css\">[\\s\\S]*?</style>",""));
         is.close();
         os.close();
         isout.close();

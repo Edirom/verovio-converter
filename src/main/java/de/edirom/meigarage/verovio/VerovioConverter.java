@@ -123,7 +123,6 @@ public class VerovioConverter implements Converter {
                         + inputFormat + " --outfile " + outputFile.getAbsolutePath()
                         + " --all-pages " + inputFile.getAbsolutePath();
                 LOGGER.debug(command);
-                System.out.println(command);
                 builder.command("sh", "-c", command);
 
                 builder.directory(inTmpDir);
@@ -133,7 +132,6 @@ public class VerovioConverter implements Converter {
                 BufferedReader inStreamReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 while (inStreamReader.readLine() != null) {
                     LOGGER.debug(inStreamReader.readLine());
-                    System.out.println(inStreamReader.readLine());
                 }
                 VerovioRunner runner = new VerovioRunner(process.getInputStream());
                 Executors.newSingleThreadExecutor().submit(runner);
